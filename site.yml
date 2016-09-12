@@ -1,0 +1,46 @@
+- name: IAM Server Certificates
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: List Server certificates
+    iam_server_cert:
+      region: ap-southeast-2
+      state: list
+    register: list_certs
+
+  - debug: msg="{{list_certs}}"
+
+  - name: Create new server certificate
+    iam_server_cert:
+      region: ap-southeast-2
+      subject:
+        country: AU
+        state: QLD
+        location: Brisbane
+        organization: My organization
+        organization_unit: Cloud Team
+      hostname: nginx01
+      state: present
+    register: certs
+
+  - debug: msg="{{certs}}"
+
+  - name: Get Server certificate
+    iam_server_cert:
+      region: ap-southeast-2
+      hostname: nginx01
+      state: get
+    register: cert
+
+  - debug: msg="{{cert}}"
+
+  - name: Delete existing server certificate
+    iam_server_cert:
+      region: ap-southeast-2
+      hostname: nginx01
+      state: absent
+    register: cert
+
+  - debug: msg="{{cert}}"
